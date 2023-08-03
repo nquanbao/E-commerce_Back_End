@@ -8,7 +8,10 @@ router.get('/',async (req, res) => {
   // find all products
   try {
     const ProductData = await Product.findAll({
-      // include: [{model: Category,Tag}]
+      include: [
+        {model: Category},
+        {model: Tag , through: ProductTag}
+      ]
     });
     res.status(200).json(ProductData);
   } catch (err) {
@@ -22,7 +25,10 @@ router.get('/:id', async (req, res) => {
   // find a single product by its `id`
   try {
     const ProductData = await Product.findByPk(req.params.id, {
-      // include: [{model: Category,Tag}]
+      include: [
+        {model: Category},
+        {model: Tag, through: ProductTag}
+      ]
     });
     if (!ProductData) {
       res.status(404).json({ message: 'No product with this id!' });
@@ -66,13 +72,6 @@ router.post('/', (req, res) => {
       res.status(400).json(err);
     });
 });
-
-// router.post('/seed', (req, res) => {
-//   // create multiple category
-//   Product.bulkCreate(productData);
-//   }
-//   );
-
 
 // update product
 router.put('/:id', (req, res) => {
